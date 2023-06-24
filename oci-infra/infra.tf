@@ -2,9 +2,17 @@ provider "oci" {
   region = var.region
 }
 
+terraform {
+  required_providers {
+    oci = {
+      source  = "oracle/oci"
+      version = ">= 5.1.0"
+    }
+  }
+}
 module "vcn" {
   source  = "oracle-terraform-modules/vcn/oci"
-  version = "3.1.0"
+  version = "3.5.4"
 
   compartment_id = var.compartment_id
   region         = var.region
@@ -154,7 +162,7 @@ resource "oci_core_subnet" "vcn_public_subnet" {
 
 resource "oci_containerengine_cluster" "k8s_cluster" {
   compartment_id     = var.compartment_id
-  kubernetes_version = "v1.21.5"
+  kubernetes_version = "v1.26.2"
   name               = "free-k8s-cluster"
   vcn_id             = module.vcn.vcn_id
 
@@ -185,21 +193,28 @@ locals {
   azs = data.oci_identity_availability_domains.ads.availability_domains[*].name
 }
 
-data "oci_core_images" "latest_image" {
+### Old way of doing it. 
+
+#data "oci_core_images" "latest_image" {
+#  compartment_id = var.compartment_id
+#  operating_system = "Oracle Linux"
+#  operating_system_version = "9.2"
+#  filter {
+#    name   = "display_name"
+#    values = ["^.*aarch64-.*$"]
+#    regex = true
+#  }
+#}
+
+data "oci_containerengine_node_pool_option" "latest_image" {
   compartment_id = var.compartment_id
-  operating_system = "Oracle Linux"
-  operating_system_version = "7.9"
-  filter {
-    name   = "display_name"
-    values = ["^.*aarch64-.*$"]
-    regex = true
-  }
+  node_pool_option_id = "all"
 }
 
 resource "oci_containerengine_node_pool" "k8s_node_pool" {
   cluster_id         = oci_containerengine_cluster.k8s_cluster.id
   compartment_id     = var.compartment_id
-  kubernetes_version = "v1.21.5"
+  kubernetes_version = "v1.26.2"
   name               = "free-k8s-node-pool"
   node_config_details {
     dynamic placement_configs {
@@ -220,7 +235,8 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   }
 
   node_source_details {
-    image_id    = data.oci_core_images.latest_image.images.0.id
+    #image_id    = data.oci_core_images.latest_image.images.0.id
+    image_id    = data.oci_containerengine_node_pool_option.latest_image.sources.0.image_id
     source_type = "image"
   }
 
@@ -234,7 +250,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
 
 resource "oci_artifacts_container_repository" "docker_repository" {
   compartment_id = var.compartment_id
-  display_name   = "free-kubernetes-nginx"
+  display_name   = "hi10-free-k8s-repo"
 
   is_immutable = false
   is_public    = false

@@ -5,11 +5,13 @@ Kubernetes cluster on Oracle Cloud.
 
 The repo was created for this article: [Free Oracle Cloud Kubernetes cluster with Terraform](https://arnoldgalovics.com/oracle-cloud-kubernetes-terraform/)
 
+
 ## Setup in a nutshell
 1. Get the following data from your Oracle Cloud account
     * User OCID
     * Tenancy OCID
     * Compartment OCID
+1. Install the Oracle OCI cli agent from [oracle](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__windows)
 1. Open a terminal within the `oci-infra` folder
 1. Execute a `terraform init`
 1. Execute a `terraform apply`
