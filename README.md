@@ -3,7 +3,7 @@
 The repository contains a Terraform script for creating a fully functioning
 Kubernetes cluster on Oracle Cloud.
 
-The repo was created for this article: [Free Oracle Cloud Kubernetes cluster with Terraform](https://arnoldgalovics.com/oracle-cloud-kubernetes-terraform/)
+The repo has been forked from [https://github.com/galovics/free-kubernetes-oracle-cloud-terraform](https://github.com/galovics/free-kubernetes-oracle-cloud-terraform) which was created for this article: [Free Oracle Cloud Kubernetes cluster with Terraform](https://arnoldgalovics.com/oracle-cloud-kubernetes-terraform/)
 
 
 ## Setup in a nutshell
@@ -25,3 +25,9 @@ The repo was created for this article: [Free Oracle Cloud Kubernetes cluster wit
     ```
 1. To verify cluster access, do a `kubectl get nodes`
 1. Enjoy
+
+# ToDoList 
+
+- [x] Updated data sources to pull K8s latest image using newest method instead of image array
+- [ ] Deploy Containers
+- [ ] Configure loadbalancer to use letsencrypt certificates
